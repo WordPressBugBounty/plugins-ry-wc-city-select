@@ -77,11 +77,12 @@ final class RY_WCS
     public function load_scripts()
     {
         if (is_cart() || is_checkout() || is_wc_endpoint_url('edit-address')) {
-            wp_enqueue_script('ry-wc-city-select', RY_WCS_PLUGIN_URL . 'style/js/city-select.js', ['jquery', 'woocommerce'], RY_WCS_VERSION, true);
+            $asset_info = include RY_WCS_PLUGIN_DIR . 'assets/ry-city-select.asset.php';
+            wp_enqueue_script('ry-city-select', RY_WCS_PLUGIN_URL . 'assets/ry-city-select.js', array_merge($asset_info['dependencies'], ['woocommerce']), $asset_info['version'], true);
 
-            wp_localize_script('ry-wc-city-select', 'ry_wc_city_select_params', [
+            wp_localize_script('ry-city-select', 'ry_wc_city_select_params', [
                 'cities' => $this->get_cities(),
-                'i18n_select_city_text' => esc_attr__('Select an option&hellip;', 'ry-wc-city-select'),
+                'i18n_select_city_text' => esc_attr__('Select an option&hellip;', 'ry-city-select'),
             ]);
         }
     }
