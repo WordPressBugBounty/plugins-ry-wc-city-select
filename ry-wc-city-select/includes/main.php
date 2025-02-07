@@ -29,6 +29,8 @@ final class RY_WCS
 
     public function do_woo_init(): void
     {
+        global $wp_filesystem;
+
         add_action('wp_enqueue_scripts', [$this, 'load_scripts']);
 
         add_filter('woocommerce_billing_fields', [$this, 'billing_fields']);
@@ -38,7 +40,7 @@ final class RY_WCS
         add_filter('woocommerce_states', [$this, 'load_country_states']);
         add_filter('woocommerce_rest_prepare_report_customers', [$this, 'set_state_local']);
 
-        $this->use_geonames_org = apply_filters('ry_wcs_load_geonames_org', true);
+        $this->use_geonames_org = apply_filters('ry_wcs_load_geonames_org', false);
         if ($this->use_geonames_org) {
             $info_exist = is_dir(RY_WCS_PLUGIN_DIR . $this->geonames_org_path);
             if ($info_exist === true) {
@@ -62,6 +64,12 @@ final class RY_WCS
                 }
             } else {
                 $this->use_geonames_org = false;
+            }
+        } else {
+            if (is_dir(RY_WCS_PLUGIN_DIR . $this->geonames_org_path)) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                WP_Filesystem();
+                $wp_filesystem->delete(RY_WCS_PLUGIN_DIR . $this->geonames_org_path, true);
             }
         }
     }
